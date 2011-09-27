@@ -20,6 +20,17 @@ public class WebsocketEndpoint extends DefaultEndpoint {
 	public WebsocketEndpoint() {
 
 	}
+	
+
+	public WebsocketStore getMemoryStore() {
+		return memoryStore;
+	}
+
+
+	public WebsocketStore getGlobalStore() {
+		return globalStore;
+	}
+
 
 	public WebsocketEndpoint(String uri, WebsocketComponent component,
 			String remaining, WebsocketConfiguration websocketConfiguration)

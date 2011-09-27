@@ -28,6 +28,12 @@ public class DefaultWebsocket implements WebSocket, OnTextMessage, Serializable 
 	@Override
 	public void onOpen(Connection connection) {
 		this.connection = connection;
+		
+		//XStream xstream = new XStream();;
+		
+		//String xml = xstream.toXML(this.connection);
+		//System.out.println(xml);
+		
 		this.connectionKey = UUID.randomUUID().toString();
 		sync.addSocket(this);
 	}
