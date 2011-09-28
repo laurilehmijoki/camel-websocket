@@ -16,8 +16,6 @@
  */
 package org.apache.camel.component.websocket;
 
-import static org.mockito.Mockito.*;
-
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
@@ -30,15 +28,22 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+
 /**
  *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class WebsocketConsumerTest {
-    
+
     private static final String CONNECTION_KEY = "random-connection-key";
     private static final String MESSAGE = "message";
-    
+
     @Mock
     private Endpoint endpoint;
 
@@ -50,10 +55,10 @@ public class WebsocketConsumerTest {
 
     @Mock
     private Exchange exchange;
-    
+
     @Mock
     private Message outMessage;
-    
+
     private Exception exception = new Exception("BAD NEWS EVERYONE!");
 
     private WebsocketConsumer websocketConsumer;
@@ -68,15 +73,15 @@ public class WebsocketConsumerTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)} .
      */
     @Test
     public void testSendExchange() throws Exception {
         when(endpoint.createExchange()).thenReturn(exchange);
         when(exchange.getOut()).thenReturn(outMessage);
-        
+
         websocketConsumer.sendExchange(CONNECTION_KEY, MESSAGE);
-        
+
         InOrder inOrder = inOrder(endpoint, exceptionHandler, processor, exchange, outMessage);
         inOrder.verify(endpoint, times(1)).createExchange();
         inOrder.verify(exchange, times(1)).getOut();
@@ -88,7 +93,7 @@ public class WebsocketConsumerTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)} .
      */
     @Test
     public void testSendExchangeWithException() throws Exception {
@@ -96,9 +101,9 @@ public class WebsocketConsumerTest {
         when(exchange.getOut()).thenReturn(outMessage);
         doThrow(exception).when(processor).process(exchange);
         when(exchange.getException()).thenReturn(exception);
-        
+
         websocketConsumer.sendExchange(CONNECTION_KEY, MESSAGE);
-        
+
         InOrder inOrder = inOrder(endpoint, exceptionHandler, processor, exchange, outMessage);
         inOrder.verify(endpoint, times(1)).createExchange();
         inOrder.verify(exchange, times(1)).getOut();
@@ -112,7 +117,7 @@ public class WebsocketConsumerTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketConsumer#sendExchange(java.lang.String, java.lang.String)} .
      */
     @Test
     public void testSendExchangeWithExchangeExceptionIsNull() throws Exception {
@@ -120,9 +125,9 @@ public class WebsocketConsumerTest {
         when(exchange.getOut()).thenReturn(outMessage);
         doThrow(exception).when(processor).process(exchange);
         when(exchange.getException()).thenReturn(null);
-        
+
         websocketConsumer.sendExchange(CONNECTION_KEY, MESSAGE);
-        
+
         InOrder inOrder = inOrder(endpoint, exceptionHandler, processor, exchange, outMessage);
         inOrder.verify(endpoint, times(1)).createExchange();
         inOrder.verify(exchange, times(1)).getOut();

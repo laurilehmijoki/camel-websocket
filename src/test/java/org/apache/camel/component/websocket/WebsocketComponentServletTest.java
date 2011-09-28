@@ -16,11 +16,7 @@
  */
 package org.apache.camel.component.websocket;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.jetty.websocket.WebSocket;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,22 +25,28 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;;
+
 /**
  *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class WebsocketComponentServletTest {
-    
-    private static final String PROTOCOL       = "ws";
-    private static final String MESSAGE        = "message";
+
+    private static final String PROTOCOL = "ws";
+    private static final String MESSAGE = "message";
     private static final String CONNECTION_KEY = "random-connection-key";
-    
+
     @Mock
     private WebsocketConsumer consumer;
 
     @Mock
     private NodeSynchronization sync;
-    
+
     @Mock
     private HttpServletRequest request;
 
@@ -59,7 +61,7 @@ public class WebsocketComponentServletTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#getConsumer()}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#getConsumer()} .
      */
     @Test
     public void testGetConsumer() {
@@ -69,7 +71,7 @@ public class WebsocketComponentServletTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#setConsumer(org.apache.camel.component.websocket.WebsocketConsumer)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#setConsumer(org.apache.camel.component.websocket.WebsocketConsumer)} .
      */
     @Test
     public void testSetConsumer() {
@@ -77,7 +79,7 @@ public class WebsocketComponentServletTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#doWebSocketConnect(javax.servlet.http.HttpServletRequest, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#doWebSocketConnect(javax.servlet.http.HttpServletRequest, java.lang.String)} .
      */
     @Test
     public void testDoWebSocketConnect() {
@@ -94,7 +96,7 @@ public class WebsocketComponentServletTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#doWebSocketConnect(javax.servlet.http.HttpServletRequest, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponentServlet#doWebSocketConnect(javax.servlet.http.HttpServletRequest, java.lang.String)} .
      */
     @Test
     public void testDoWebSocketConnectConsumerIsNull() {

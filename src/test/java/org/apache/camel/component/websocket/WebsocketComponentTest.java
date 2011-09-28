@@ -16,9 +16,6 @@
  */
 package org.apache.camel.component.websocket;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +31,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -75,7 +83,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createContext()}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createContext()} .
      */
     @Test
     public void testCreateContext() {
@@ -84,7 +92,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServer(org.eclipse.jetty.servlet.ServletContextHandler, java.lang.String, int, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServer(org.eclipse.jetty.servlet.ServletContextHandler, java.lang.String, int, java.lang.String)} .
      */
     @Test
     public void testCreateServerWithoutStaticContent() {
@@ -104,7 +112,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServer(org.eclipse.jetty.servlet.ServletContextHandler, java.lang.String, int, java.lang.String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServer(org.eclipse.jetty.servlet.ServletContextHandler, java.lang.String, int, java.lang.String)} .
      */
     @Test
     public void testCreateServerWithStaticContent() {
@@ -125,14 +133,14 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createEndpoint(String, String, java.util.Map)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createEndpoint(String, String, java.util.Map)} .
      */
     @Test
     public void testCreateEndpoint() throws Exception {
         Map<String, Object> parameters = new HashMap<String, Object>();
-        
+
         component.setCamelContext(camelContext);
-        
+
         Endpoint e1 = component.createEndpoint("websocket://foo", "foo", parameters);
         Endpoint e2 = component.createEndpoint("websocket://foo", "foo", parameters);
         Endpoint e3 = component.createEndpoint("websocket://bar", "bar", parameters);
@@ -145,24 +153,24 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#setServletConsumer(WebsocketComponentServlet, WebsocketConsumer)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#setServletConsumer(WebsocketComponentServlet, WebsocketConsumer)} .
      */
     @Test
     public void testSetServletConsumer() throws Exception {
         when(servlet.getConsumer()).thenReturn(null, null, consumer);
         InOrder inOrder = inOrder(servlet, consumer, sync);
-        component.setServletConsumer(servlet, null);        // null && null
+        component.setServletConsumer(servlet, null); // null && null
         inOrder.verify(servlet, times(0)).setConsumer(null);
-        component.setServletConsumer(servlet, consumer);    // null && not null
+        component.setServletConsumer(servlet, consumer); // null && not null
         inOrder.verify(servlet, times(1)).setConsumer(consumer);
-        component.setServletConsumer(servlet, null);        // not null && null
+        component.setServletConsumer(servlet, null); // not null && null
         inOrder.verify(servlet, times(0)).setConsumer(consumer);
-        component.setServletConsumer(servlet, consumer);    // not null && not null
+        component.setServletConsumer(servlet, consumer); // not null && not null
         inOrder.verify(servlet, times(0)).setConsumer(consumer);
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServlet(WebsocketStore, String, Map, ServletContextHandler)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createServlet(WebsocketStore, String, Map, ServletContextHandler)} .
      */
     @Test
     public void testCreateServlet() throws Exception {
@@ -177,7 +185,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createPathSpec(String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#createPathSpec(String)} .
      */
     @Test
     public void testCreatePathSpec() {
@@ -186,7 +194,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)} .
      */
     @Test
     public void testAddServletProducersOnly() throws Exception {
@@ -202,9 +210,9 @@ public class WebsocketComponentTest {
         assertNull(s2.getConsumer());
         component.doStop();
     }
-    
+
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)} .
      */
     @Test
     public void testAddServletConsumersOnly() throws Exception {
@@ -222,7 +230,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)} .
      */
     @Test
     public void testAddServletProducerAndConsumer() throws Exception {
@@ -239,7 +247,7 @@ public class WebsocketComponentTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketComponent#addServlet(WebsocketStore, WebsocketConsumer, String)} .
      */
     @Test
     public void testAddServletConsumerAndProducer() throws Exception {

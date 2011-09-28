@@ -19,15 +19,14 @@ package org.apache.camel.component.websocket;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MemoryWebsocketStore extends
-		ConcurrentHashMap<String, DefaultWebsocket> implements WebsocketStore {
+public class MemoryWebsocketStore extends ConcurrentHashMap<String, DefaultWebsocket> implements WebsocketStore {
 
-	private static final long serialVersionUID = -2826843758230613922L;
+    private static final long serialVersionUID = -2826843758230613922L;
 
-	@Override
-	public void add(DefaultWebsocket ws) {
-		super.put(ws.getConnectionKey(), ws);
-	}
+    @Override
+    public void add(DefaultWebsocket ws) {
+        super.put(ws.getConnectionKey(), ws);
+    }
 
     @Override
     public void remove(DefaultWebsocket ws) {

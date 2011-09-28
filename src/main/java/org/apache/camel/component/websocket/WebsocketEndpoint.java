@@ -24,79 +24,69 @@ import org.apache.camel.util.ObjectHelper;
 
 public class WebsocketEndpoint extends DefaultEndpoint {
 
-	// Todo: Change to Options
-	private NodeSynchronization sync;
-	private String remaining;
+    // Todo: Change to Options
+    private NodeSynchronization sync;
+    private String remaining;
 
-	private WebsocketStore memoryStore;
-	private WebsocketStore globalStore;
+    private WebsocketStore memoryStore;
+    private WebsocketStore globalStore;
 
-	private WebsocketConfiguration websocketConfiguration;
+    private WebsocketConfiguration websocketConfiguration;
 
-	public WebsocketEndpoint() {
+    public WebsocketEndpoint() {
 
-	}
-	
+    }
+    
+    public WebsocketEndpoint(String uri, WebsocketComponent component, String remaining, WebsocketConfiguration websocketConfiguration) throws InstantiationException, IllegalAccessException {
+        super(uri, component);
+        this.remaining = remaining;
 
-	public WebsocketStore getMemoryStore() {
-		return memoryStore;
-	}
+        this.memoryStore = new MemoryWebsocketStore();
+        // TODO: init globalStore
 
+        this.websocketConfiguration = websocketConfiguration;
 
-	public WebsocketStore getGlobalStore() {
-		return globalStore;
-	}
+        if (websocketConfiguration.getGlobalStore() != null) {
+            this.globalStore = (WebsocketStore) ObjectHelper.loadClass(this.websocketConfiguration.getGlobalStore()).newInstance();
+        }
 
+        // this.sync = new NodeSynchronizationImpl(this.memoryStore, null);
+        this.sync = new NodeSynchronizationImpl(this.memoryStore, this.globalStore);
+    }
 
-	public WebsocketEndpoint(String uri, WebsocketComponent component,
-			String remaining, WebsocketConfiguration websocketConfiguration)
-			throws InstantiationException, IllegalAccessException {
-		super(uri, component);
-		this.remaining = remaining;
+    public WebsocketStore getMemoryStore() {
+        return memoryStore;
+    }
 
-		this.memoryStore = new MemoryWebsocketStore();
-		// TODO: init globalStore
+    public WebsocketStore getGlobalStore() {
+        return globalStore;
+    }
 
-		this.websocketConfiguration = websocketConfiguration;
+    @Override
+    public Consumer createConsumer(Processor processor) throws Exception {
 
-		if (websocketConfiguration.getGlobalStore() != null) {
-			this.globalStore = (WebsocketStore) ObjectHelper.loadClass(
-					this.websocketConfiguration.getGlobalStore()).newInstance();
-		}
+        // init consumer
+        WebsocketConsumer consumer = new WebsocketConsumer(this, processor);
 
-		// this.sync = new NodeSynchronizationImpl(this.memoryStore, null);
-		this.sync = new NodeSynchronizationImpl(this.memoryStore,
-				this.globalStore);
+        // register servlet
+        ((WebsocketComponent) super.getComponent()).addServlet(this.sync, consumer, this.remaining);
 
-	}
+        return consumer;
+    }
 
-	@Override
-	public Consumer createConsumer(Processor processor) throws Exception {
+    @Override
+    public Producer createProducer() throws Exception {
 
-		// init consumer
-		WebsocketConsumer consumer = new WebsocketConsumer(this, processor);
+        // register servlet without consumer
+        ((WebsocketComponent) super.getComponent()).addServlet(this.sync, null, this.remaining);
 
-		// register servlet
-		((WebsocketComponent) super.getComponent()).addServlet(this.sync,
-				consumer, this.remaining);
+        return new WebsocketProducer(this, this.memoryStore);
+    }
 
-		return consumer;
-	}
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
-	@Override
-	public Producer createProducer() throws Exception {
-
-		// register servlet without consumer
-		((WebsocketComponent) super.getComponent()).addServlet(this.sync, null,
-				this.remaining);
-
-		return new WebsocketProducer(this, this.memoryStore);
-	}
-
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
-
-	// TODO --> implement store factory
+    // TODO --> implement store factory
 }

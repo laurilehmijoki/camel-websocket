@@ -31,28 +31,13 @@ public class WebsocketComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() throws Exception {
         return new RouteBuilder() {
             public void configure() {
-            	
-            	from("websocket://foo")
-            	.log("received message: ")
-            	.log("----> ${body}")
-            	.choice()
-            		.when(body(Integer.class).isGreaterThan(500))
-            			.to("seda://greater500")
-            		.when(body(Integer.class).isLessThan(500))
-            			.to("seda://less500")
-            		.otherwise()
-            			.setBody(constant("request failed..."))
-            			.to("websocket://foo");           	
-            	
-            	from("seda://greater500")
-            	.setBody(constant("forms/c.xml"))
-            	.log("C --> ${body}")
-            	.to("websocket://foo");
-            	
-            	from("seda://less500")
-            	.setBody(constant("forms/b.xml"))
-            	.log("B --> ${body}")
-            	.to("websocket://foo");
+
+                from("websocket://foo").log("received message: ").log("----> ${body}").choice().when(body(Integer.class).isGreaterThan(500)).to("seda://greater500")
+                        .when(body(Integer.class).isLessThan(500)).to("seda://less500").otherwise().setBody(constant("request failed...")).to("websocket://foo");
+
+                from("seda://greater500").setBody(constant("forms/c.xml")).log("C --> ${body}").to("websocket://foo");
+
+                from("seda://less500").setBody(constant("forms/b.xml")).log("B --> ${body}").to("websocket://foo");
             }
         };
     }

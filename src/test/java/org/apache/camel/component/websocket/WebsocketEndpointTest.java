@@ -16,9 +16,6 @@
  */
 package org.apache.camel.component.websocket;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
@@ -30,15 +27,23 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+
 /**
  *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class WebsocketEndpointTest {
 
-    private static final String REMAINING = "foo/bar"; 
-    private static final String URI       = "websocket://" + REMAINING;
-    
+    private static final String REMAINING = "foo/bar";
+    private static final String URI = "websocket://" + REMAINING;
+
     @Mock
     private WebsocketComponent component;
 
@@ -56,7 +61,7 @@ public class WebsocketEndpointTest {
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#createConsumer(org.apache.camel.Processor)}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#createConsumer(org.apache.camel.Processor)} .
      */
     @Test
     public void testCreateConsumer() throws Exception {
@@ -68,14 +73,14 @@ public class WebsocketEndpointTest {
         ArgumentCaptor<WebsocketConsumer> consumerCaptor = ArgumentCaptor.forClass(WebsocketConsumer.class);
         inOrder.verify(component, times(1)).addServlet(synchronizationCaptor.capture(), consumerCaptor.capture(), eq(REMAINING));
         inOrder.verifyNoMoreInteractions();
-        
+
         assertEquals(NodeSynchronizationImpl.class, synchronizationCaptor.getValue().getClass());
-        
+
         assertEquals(consumer, consumerCaptor.getValue());
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#createProducer()}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#createProducer()} .
      */
     @Test
     public void testCreateProducer() throws Exception {
@@ -84,14 +89,14 @@ public class WebsocketEndpointTest {
         assertEquals(WebsocketProducer.class, producer.getClass());
         InOrder inOrder = inOrder(component, processor);
         ArgumentCaptor<NodeSynchronization> synchronizationCaptor = ArgumentCaptor.forClass(NodeSynchronization.class);
-        inOrder.verify(component, times(1)).addServlet(synchronizationCaptor.capture(), (WebsocketConsumer)isNull(), eq(REMAINING));
+        inOrder.verify(component, times(1)).addServlet(synchronizationCaptor.capture(), (WebsocketConsumer) isNull(), eq(REMAINING));
         inOrder.verifyNoMoreInteractions();
-        
+
         assertEquals(NodeSynchronizationImpl.class, synchronizationCaptor.getValue().getClass());
     }
 
     /**
-     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#isSingleton()}.
+     * Test method for {@link org.apache.camel.component.websocket.WebsocketEndpoint#isSingleton()} .
      */
     @Test
     public void testIsSingleton() {
