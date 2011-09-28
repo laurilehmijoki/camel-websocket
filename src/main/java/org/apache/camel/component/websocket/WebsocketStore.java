@@ -20,13 +20,14 @@ import java.util.Collection;
 
 public interface WebsocketStore {
 
-    void add(String key, DefaultWebsocket ws);
+	public void add(DefaultWebsocket ws);
 
-    void remove(DefaultWebsocket ws);
+	public void remove(DefaultWebsocket ws);
 
-    void remove(String key);
+	public void remove(String key);
 
-    DefaultWebsocket get(String key);
+	public DefaultWebsocket get(String key);
 
-    Collection<DefaultWebsocket> getAll();
+	public Collection<DefaultWebsocket> getAll();
+	
 }

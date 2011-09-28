@@ -16,8 +16,14 @@
  */
 package org.apache.camel.component.websocket;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 
@@ -38,11 +44,17 @@ public class MemoryWebsocketStoreTest {
     private static final String KEY_2 = "two";
     
     @Mock
-    private DefaultWebsocket websocket1;
+    private WebsocketConsumer consumer;
+    
+    @Mock
+    private NodeSynchronization sync;
+    
+    @Mock
+    private DefaultWebsocket websocket1 = new DefaultWebsocket(sync, consumer);;
 
     @Mock
-    private DefaultWebsocket websocket2;
-
+    private DefaultWebsocket websocket2 = new DefaultWebsocket(sync, consumer);;
+    
     private MemoryWebsocketStore store;
     
     /**
@@ -51,6 +63,8 @@ public class MemoryWebsocketStoreTest {
     @Before
     public void setUp() throws Exception {
         store = new MemoryWebsocketStore();
+        when(websocket1.getConnectionKey()).thenReturn(KEY_1);
+        when(websocket2.getConnectionKey()).thenReturn(KEY_2);
     }
 
     /**
@@ -58,27 +72,21 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testAdd() {
-        store.add(KEY_1, websocket1);
+    	assertNotNull(websocket1.getConnectionKey());
+    	
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
-        assertEquals(websocket1, store.get(KEY_1));
-        store.add(KEY_1, websocket2);
-        assertEquals(websocket2, store.get(KEY_1));
+
+        store.add(websocket2);
+        assertEquals(websocket2, store.get(KEY_2));
     }
     
     /**
-     * Test method for {@link org.apache.camel.component.websocket.MemoryWebsocketStore#add(java.lang.String, org.apache.camel.component.websocket.DefaultWebsocket)}.
+     * Test method for {@link org.apache.camel.component.websocket.MemoryWebsocketStore#add(org.apache.camel.component.websocket.DefaultWebsocket)}.
      */
     @Test(expected = NullPointerException.class)
     public void testAddNullValue() {
-        store.add(KEY_1, null);
-    }
-
-    /**
-     * Test method for {@link org.apache.camel.component.websocket.MemoryWebsocketStore#add(java.lang.String, org.apache.camel.component.websocket.DefaultWebsocket)}.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testAddNullKey() {
-        store.add(null, websocket1);
+        store.add(null);
     }
 
     /**
@@ -86,14 +94,15 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testRemoveDefaultWebsocket() {
-        when(websocket1.getConnectionKey()).thenReturn(KEY_1);
-        store.add(KEY_1, websocket1);
+        // first call of websocket1.getConnectionKey()
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
+        // second call of websocket1.getConnectionKey()
         store.remove(websocket1);
         assertNull(store.get(KEY_1));
-        
+      
         InOrder inOrder = inOrder(websocket1, websocket2);
-        inOrder.verify(websocket1, times(1)).getConnectionKey();
+        inOrder.verify(websocket1, times(2)).getConnectionKey();
         inOrder.verifyNoMoreInteractions();
     }
     
@@ -102,8 +111,12 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testRemoveDefaultWebsocketKeyNotSet() {
+    	// first call of websocket1.getConnectionKey()
+    	store.add(websocket1);
+        
+    	// overload getConnectionKey() after store.add() - otherwise npe
         when(websocket1.getConnectionKey()).thenReturn(null);
-        store.add(KEY_1, websocket1);
+        
         assertEquals(websocket1, store.get(KEY_1));
         
         try {
@@ -115,7 +128,7 @@ public class MemoryWebsocketStoreTest {
         }
         
         InOrder inOrder = inOrder(websocket1, websocket2);
-        inOrder.verify(websocket1, times(1)).getConnectionKey();
+        inOrder.verify(websocket1, times(2)).getConnectionKey();
         inOrder.verifyNoMoreInteractions();
     }
     
@@ -124,8 +137,8 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testRemoveNotExisting() {
-        when(websocket2.getConnectionKey()).thenReturn(KEY_2);
-        store.add(KEY_1, websocket1);
+        websocket1.setConnectionKey(KEY_1);
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
         assertNull(store.get(KEY_2));
         store.remove(websocket2);
@@ -142,7 +155,8 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testRemoveString() {
-        store.add(KEY_1, websocket1);
+        websocket1.setConnectionKey(KEY_1);
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
         store.remove(KEY_1);
         assertNull(store.get(KEY_1));
@@ -153,7 +167,8 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testRemoveStringNotExisting() {
-        store.add(KEY_1, websocket1);
+        websocket1.setConnectionKey(KEY_1);
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
         assertNull(store.get(KEY_2));
         store.remove(KEY_2);
@@ -167,10 +182,12 @@ public class MemoryWebsocketStoreTest {
      */
     @Test
     public void testGetString() {
-        store.add(KEY_1, websocket1);
+        websocket1.setConnectionKey(KEY_1);
+        store.add(websocket1);
         assertEquals(websocket1, store.get(KEY_1));
         assertNull(store.get(KEY_2));
-        store.add(KEY_2, websocket2);
+        websocket2.setConnectionKey(KEY_2);
+        store.add(websocket2);
         assertEquals(websocket1, store.get(KEY_1));
         assertEquals(websocket2, store.get(KEY_2));
     }
@@ -184,13 +201,15 @@ public class MemoryWebsocketStoreTest {
         assertNotNull(sockets);
         assertEquals(0, sockets.size());
         
-        store.add(KEY_1, websocket1);
+        websocket1.setConnectionKey(KEY_1);        
+        store.add(websocket1);
         sockets = store.getAll();
         assertNotNull(sockets);
         assertEquals(1, sockets.size());
         assertTrue(sockets.contains(websocket1));
 
-        store.add(KEY_2, websocket2);
+        websocket2.setConnectionKey(KEY_2);
+        store.add(websocket2);
         sockets = store.getAll();
         assertNotNull(sockets);
         assertEquals(2, sockets.size());

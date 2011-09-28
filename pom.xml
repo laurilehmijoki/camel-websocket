@@ -1,99 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
-    license agreements. See the NOTICE file distributed with this work for additional 
-    information regarding copyright ownership. The ASF licenses this file to 
-    You under the Apache License, Version 2.0 (the "License"); you may not use 
-    this file except in compliance with the License. You may obtain a copy of 
-    the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-    by applicable law or agreed to in writing, software distributed under the 
-    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-    OF ANY KIND, either express or implied. See the License for the specific 
-    language governing permissions and limitations under the License. -->
+	<!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-websocket</artifactId>
-    <packaging>jar</packaging>
-    <version>2.9-SNAPSHOT</version>
+	<groupId>org.apache.camel</groupId>
+	<artifactId>camel-websocket</artifactId>
+	<packaging>bundle</packaging>
+	<version>2.9-SNAPSHOT</version>
 
-    <name>A Camel WebSocket Component</name>
-    <url>http://camel.apache.org</url>
+	<name>Camel :: Websocket-Component</name>
+	<url>http://camel.apache.org</url>
 
-    <properties>
-        <camel-version>2.8.1</camel-version>
-        <jetty-version>8.0.1.v20110908</jetty-version>
-        <slf4j-version>1.6.2</slf4j-version>
+	<properties>
+		<camel-version>2.9-SNAPSHOT</camel-version>
+		<jetty-version>8.0.1.v20110908</jetty-version>
+		<mockito-version>1.8.5</mockito-version>
+		<slf4j-version>1.6.2</slf4j-version>
         <log4j-version>1.2.16</log4j-version>
-        <mockito-version>1.8.5</mockito-version>
         <junit-version>4.9</junit-version>
-    </properties>
+	</properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${camel-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-websocket</artifactId>
-            <version>${jetty-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty-version}</version>
-        </dependency>
+	<repositories>
+	 	<repository>
+      		<id>apache.snapshots</id>
+      		<name>Apache Development Snapshot Repository</name>
+      		<url>https://repository.apache.org/content/repositories/snapshots/</url>
+      		<releases>
+          	<enabled>false</enabled>
+      		</releases>
+      		<snapshots>
+          	<enabled>true</enabled>
+      		</snapshots>
+  			</repository>
+	</repositories>
+	
+	<pluginRepositories>
+  		<pluginRepository>
+      		<id>apache.snapshots</id>
+      		<name>Apache Development Snapshot Repository</name>
+      		<url>https://repository.apache.org/content/repositories/snapshots/</url>
+      		<releases>
+          		<enabled>false</enabled>
+      		</releases>
+      		<snapshots>
+          		<enabled>true</enabled>
+      		</snapshots>
+  		</pluginRepository>
+  	</pluginRepositories>
 
-        <!-- logging -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-version}</version>
-        </dependency>
+	<dependencies>
+		 <dependency>
+        	<groupId>org.apache.camel</groupId>
+        	<artifactId>camel-core</artifactId>
+        	<version>${camel-version}</version>
+    	</dependency>
 
-        <!-- for testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit-version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test</artifactId>
-            <version>${camel-version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-              <artifactId>mockito-all</artifactId>
-              <version>${mockito-version}</version>
-              <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-websocket</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
 
-    <build>
-        <defaultGoal>install</defaultGoal>
+		<!-- logging -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+		<!-- for testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test</artifactId>
+			<version>${camel-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<defaultGoal>install</defaultGoal>
 
-        </plugins>
-    </build>
+		<plugins>
+		  	<plugin>
+          		<groupId>org.apache.camel</groupId>
+          		<artifactId>camel-maven-plugin</artifactId>
+          		<version>2.9-SNAPSHOT</version>
+      		</plugin>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.1.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Name>${project.artifactId}-osgi</Bundle-Name>
+						<Bundle-SymbolicName>camel-websocket-osgi</Bundle-SymbolicName>
+						<Export-Package>
+							org.apache.camel.component.websocket
+						</Export-Package>
+						<Import-Package>*</Import-Package>
+						<Spring-Context>*;publish-context:=false;create-asynchronously:=true</Spring-Context>
+						<DynamicImport-Package>*</DynamicImport-Package>
+						<Implementation-Title>Camel :: Websocket OSGI-Implementation</Implementation-Title>
+						<Implementation-Version>${project.version}</Implementation-Version>
+					</instructions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>
