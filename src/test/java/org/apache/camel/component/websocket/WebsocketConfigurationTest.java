@@ -23,12 +23,13 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 public class WebsocketConfigurationTest {
 
     private static final String REMAINING = "foo";
     private static final String URI = "websocket://" + REMAINING;
-    private static final String PARAMETERS = "org.apache.camel.component.websocket.WebsocketConfigurationTestMemStoreTestImpl";
+    private static final String PARAMETERS = "org.apache.camel.component.websocket.MemoryWebsocketStore";
 
     @Mock
     private WebsocketComponent component;
@@ -57,6 +58,9 @@ public class WebsocketConfigurationTest {
 
         websocketEndpoint = new WebsocketEndpoint(URI, component, REMAINING, wsConfig);
 
+        assertNotNull(websocketEndpoint);
+        assertNotNull(REMAINING);
+        assertNotNull(wsConfig.getGlobalStore());
         // System.out.println(URI);
         // System.out.println(component);
         // System.out.println(REMAINING);
