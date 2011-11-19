@@ -13,7 +13,7 @@
       var room = {
         join: function(name) {
           this._username=name;
-          var location = "ws://localhost:1989/foo/";
+          var location = "ws://localhost:9292/foo/";
           this._ws=new WebSocket(location);
           this._ws.onopen=this._onopen;
           this._ws.onmessage=this._onmessage;
