@@ -8,7 +8,20 @@ import org.apache.camel.impl.DefaultCamelContext;
 import java.io.File;
 
 /**
- * WebSockets and Camel in action! Just run the main method and follow the printed instructions.
+ * This Camel example demonstrates a synchronous communication model between two WebSocket
+ * clients. In this model its possible to send synchronous messages from A to B even though B would
+ * sit behind a firewall.
+ * <p/>
+ * <pre>
+ *     Client A                                                                      Client B
+ *     |                                                                             |
+ *     |                                                                             |
+ *     | (send message)                                                              | (receive message)
+ *     |                                                                             |
+ *     |                                                                             |
+ *     +------ Camel WebSocket endpoint --- logger --- Camel WebSocket endpoint -----+
+ * </pre>
+ * <p/>
  */
 public class CamelWebSocketExample {
 
